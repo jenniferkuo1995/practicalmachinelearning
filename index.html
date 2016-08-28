@@ -183,11 +183,11 @@ time &lt;- proc.time() - start</code></pre>
 </div>
 <div id="evaluating-the-model" class="section level2">
 <h2>Evaluating the Model</h2>
-<p>Looking at the variable ‘time’, we find that the elapsed time was 45.200,which is relatively short.</p>
+<p>Looking at the variable ‘time’, we find that the elapsed time was 52.977,which is relatively short.</p>
 <pre class="r"><code>time</code></pre>
 <pre><code>##    user  system elapsed 
 ##  46.971   1.185  52.977</code></pre>
-<p>Next, we evaluate how accurate the model is by using it to predict on the testing set. A summary of results is obtained using the confusionMatrix function. The output is shown below. From this, we get an accuracy of 99.68%. In other words, we can estimate an <strong>out of sample error of 0.32%</strong>. The low error is promising, and suggests that the random forest model was effective. For more accurate results, ntree could be increased, though this would lead to a trade-off in runtime.</p>
+<p>Next, we evaluate how accurate the model is by using it to predict on the testing set. A summary of results is obtained using the confusionMatrix function. The output is shown below. From this, we get an accuracy of 99.59%. In other words, we can estimate an <strong>out of sample error of 0.41%</strong>. The low error is promising, and suggests that the random forest model was effective. For more accurate results, ntree could be increased, though this would lead to a trade-off in runtime.</p>
 <pre class="r"><code>rf_prediction &lt;- predict(rfFit,newdata = testing)
 confusionMatrix(rf_prediction, testing$classe)</code></pre>
 <pre><code>## Confusion Matrix and Statistics
