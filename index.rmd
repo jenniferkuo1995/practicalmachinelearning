@@ -1,0 +1,120 @@
+---
+title: "Practical Machine Learning Course Project"
+author: "Jennifer Kuo"
+date: "August 28, 2016"
+output: html_document
+---
+
+```{r preliminaries, include=FALSE, cache=FALSE}
+library(knitr)
+opts_chunk$set(cache=TRUE)
+set.seed(1)
+```
+
+## Data
+
+This project uses data from accelerometers ont he belt, forearm, arm, and dumbell of 6 particpants. In particular: 
+
+*  training data available at: https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv
+*  test data available at: https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv
+
+##Aim
+The 6 participants of the data above were asked to perform barbell lifts correctly and incorrectly in 5 different ways. This project aims to predict, based on accelerometer information, their manner of excercise out of these 5 ways. This is the "classe" variable in the training set. To do so, I will:
+* Process the test Data
+* Split the Data Using Cross Validation
+* Build a Prediction Model
+* Evaluate the Model 
+* Predict on 20 Test Cases
+
+##Data Processing
+First, as shown below, the data is imported into the data variable.
+```{r read.csv}
+library(lattice); library(ggplot2); library(caret);library(randomForest)
+
+data <- read.csv("~/Documents/machine-learning-project/pml-training.csv",
+                 na.strings = c("#DIV/0!","NA", ""))
+```
+Next, a look at the missing values shows that there are a large number of columns containing a majority of missing values. 
+```{r count NAs}
+
+table(sapply(data, function(x) {sum(is.na(x))}))
+
+```
+
+As such, I decided to clean the data by removing columns with mostly missing values. The resulting new_data only has columns that contain no missing values. As seen from the table function, we are left with 60 columns that have 0 NA values. 
+
+```{r remove NA columns}
+new_data <- data[ , colSums(is.na(data)) == 0]
+table(sapply(new_data, function(x) {sum(is.na(x))}))
+```
+
+Additionally, by looking at the first 7 columns, we see that they are not sensor readings, and as such are not relevant predictors for classe. As such, I removed them.
+
+```{r remove non-sensor columns}
+names(new_data)[1:10]
+new_data <- new_data[,8:length(new_data)]
+```
+
+
+## Splitting Data
+Using the createDataPartition function of the caret package, I split up new_data into a training set to train the model on, and a testing set to run predictions on (to test the accuracy of the model).
+```{r createDataPartition}
+set.seed(11)
+
+inTrain <- createDataPartition(y=new_data$classe, p=0.7, list=FALSE)
+training <- new_data[inTrain,]
+testing <- new_data[-inTrain,]
+```
+
+##Building a Prediction Model
+Now, I will create a model to predict the classe variable. I chose to build a random forest model using the randomForest package, as it produced accurate results in a relatively short span of time. 
+In addition, I took proc.time() before and after the prediction was done, and subtracted this to find the total elapsed time.
+```{r train model}
+set.seed(2)
+
+start <- proc.time()
+rfFit <- randomForest(formula = classe ~ ., data = training, ntree = 500)
+time <- proc.time() - start
+
+```
+
+##Evaluating the Model
+Looking at the variable 'time', we find that the elapsed time was 45.200,which is relatively short.
+```{r time}
+time
+```
+
+Next, we evaluate how accurate the model is by using it to predict on the testing set. A summary of results is obtained using the confusionMatrix function. The output is shown below. From this, we get an accuracy of 99.68%. In other words, we can estimate an **out of sample error of 0.32%**. The low error is promising, and suggests that the random forest model was effective. For more accurate results, ntree could be increased, though this would lead to a trade-off in runtime. 
+
+```{r confusionMatrix}
+rf_prediction <- predict(rfFit,newdata = testing)
+confusionMatrix(rf_prediction, testing$classe)
+```
+
+To get a relative picture of how well my model worked, I also ran the train function of the caret package using method = 'rf' for comparison. This produced the results shown below. Compared to my model, this method produces a lower accuracy (of 99.51%) and much longer runtime (elapsed time of 4631.342). As such, the model I chose was both faster and more accurate. 
+
+```{r compare models}
+start <- proc.time()
+rfFit.2 = train(classe~., method="rf", data=training, verbose = FALSE)
+time <- proc.time() - start
+
+time #get runtime
+
+rf_prediction.2 <- predict(rfFit.2,newdata = testing)
+confusionMatrix(rf_prediction.2, testing$classe) # get accuracy of prediction
+
+```
+
+##Predicting on 20 Test Cases
+Finally, to further evaluate my model, I tested it on a separate test set with 20 cases I first imported the test set into pml.test, then ran the predict function using my model. The resulting prediction was correct 20/20 times, supporting the accuracy of the model.
+
+```{r read test set}
+pml.test <- read.csv("~/Documents/machine-learning-project/pml-testing.csv",
+            na.strings = c("#DIV/0!","NA", ""))
+```
+
+```{r predict on test set}
+pml.predict <- predict(rfFit, pml.test)
+```
+
+***************************************************************************
