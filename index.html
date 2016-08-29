@@ -221,7 +221,7 @@ confusionMatrix(rf_prediction, testing$classe)</code></pre>
 ## Detection Rate         0.2845   0.1925   0.1732   0.1623   0.1835
 ## Detection Prevalence   0.2850   0.1935   0.1752   0.1626   0.1837
 ## Balanced Accuracy      0.9996   0.9967   0.9954   0.9951   0.9990</code></pre>
-<p>To get a relative picture of how well my model worked, I also ran the train function of the caret package using method = ‘rf’ for comparison. This produced the results shown below. Compared to my model, this method produces a lower accuracy (of 99.51%) and much longer runtime (elapsed time of 4631.342). As such, the model I chose was both faster and more accurate.</p>
+<p>To get a relative picture of how well my model worked, I also ran the train function of the caret package using method = ‘rf’ for comparison. This produced the results shown below. Compared to my model, this method produces a lower accuracy (of 99.37%) and much longer runtime (elapsed time of 4631.342). As such, the model I chose was both faster and more accurate.</p>
 <pre class="r"><code>start &lt;- proc.time()
 rfFit.2 = train(classe~., method=&quot;rf&quot;, data=training, verbose = FALSE)
 time &lt;- proc.time() - start

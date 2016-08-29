@@ -5,7 +5,7 @@ date: "August 28, 2016"
 output: html_document
 ---
 
-```{r preliminaries, include=FALSE, cache=FALSE, echo=FALSE}
+```{r preliminaries, include=FALSE, cache=FALSE, echo=FALSE, results ='hide'}
 library(knitr)
 opts_chunk$set(cache=TRUE)
 set.seed(1)
