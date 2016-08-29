@@ -196,11 +196,16 @@ time &lt;- proc.time() - start</code></pre>
 </div>
 <div id="evaluating-the-model" class="section level2">
 <h2>Evaluating the Model</h2>
+<div id="time-taken" class="section level4">
+<h4>Time Taken</h4>
 <p>Looking at the variable ‘time’, we find that the elapsed time was 52.977,which is relatively short.</p>
 <pre class="r"><code>time</code></pre>
 <pre><code>##    user  system elapsed 
 ##  46.971   1.185  52.977</code></pre>
-<p>Next, we evaluate how accurate the model is by using it to predict on the testing set. A summary of results is obtained using the confusionMatrix function. The output is shown below. From this, we get an accuracy of 99.59%. In other words, we can estimate an <strong>out of sample error of 0.41%</strong>. The low error is promising, and suggests that the random forest model was effective. For more accurate results, ntree could be increased, though this would lead to a trade-off in runtime.</p>
+</div>
+<div id="cross-validation-and-out-of-sample-error" class="section level4">
+<h4>Cross Validation and Out-of-Sample Error</h4>
+<p>Next, we evaluate how accurate the model is by performing cross-validation on the testing set. A summary of results is obtained using the confusionMatrix function. The output is shown below. From this, we get an accuracy of 99.59%. In other words, we can estimate an <strong>out of sample error of 0.41%</strong>. The low error is promising, and suggests that the random forest model was effective. For more accurate results, ntree could be increased, though this would lead to a trade-off in runtime.</p>
 <pre class="r"><code>rf_prediction &lt;- predict(rfFit,newdata = testing)
 confusionMatrix(rf_prediction, testing$classe)</code></pre>
 <pre><code>## Confusion Matrix and Statistics
@@ -275,6 +280,7 @@ confusionMatrix(rf_prediction.2, testing$classe) # get accuracy of prediction</c
 ## Detection Rate         0.2841   0.1927   0.1723   0.1613   0.1833
 ## Detection Prevalence   0.2846   0.1949   0.1754   0.1616   0.1835
 ## Balanced Accuracy      0.9990   0.9964   0.9923   0.9920   0.9985</code></pre>
+</div>
 </div>
 <div id="predicting-on-20-test-cases" class="section level2">
 <h2>Predicting on 20 Test Cases</h2>
