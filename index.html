@@ -149,7 +149,7 @@ $(document).ready(function () {
 
 data &lt;- read.csv(&quot;~/Documents/machine-learning-project/pml-training.csv&quot;,
                  na.strings = c(&quot;#DIV/0!&quot;,&quot;NA&quot;, &quot;&quot;))</code></pre>
-<p>Next, I took an initial look at the data using the dim function. This shows that there are a large number of columns/predictors (60 in total). As such, I looked at how the number of columns could be reduced.</p>
+<p>Next, I took an initial look at the data using the dim function. This shows that there are a large number of columns/predictors (160 in total). As such, I looked at how the number of columns could be reduced.</p>
 <pre class="r"><code>dim(data)</code></pre>
 <pre><code>## [1] 19622   160</code></pre>
 <p>A count of the NAs in each column shows that many columns containing mostly missing values.</p>
@@ -165,14 +165,14 @@ table(sapply(new_data, function(x) {sum(is.na(x))}))</code></pre>
 <pre><code>## 
 ##  0 
 ## 60</code></pre>
-<p>Additionally, by looking at the first 7 columns, we see that they are not sensor readings, and as such are not relevant predictors for classe. As such, I removed them.</p>
+<p>Then, by looking at the names of the first 10 columns, we see that the first 7 columns are not sensor readings, and as such are not relevant predictors for classe. These were also removed.</p>
 <pre class="r"><code>names(new_data)[1:10]</code></pre>
 <pre><code>##  [1] &quot;X&quot;                    &quot;user_name&quot;            &quot;raw_timestamp_part_1&quot;
 ##  [4] &quot;raw_timestamp_part_2&quot; &quot;cvtd_timestamp&quot;       &quot;new_window&quot;          
 ##  [7] &quot;num_window&quot;           &quot;roll_belt&quot;            &quot;pitch_belt&quot;          
 ## [10] &quot;yaw_belt&quot;</code></pre>
 <pre class="r"><code>new_data &lt;- new_data[,8:length(new_data)]</code></pre>
-<p>After processing the data</p>
+<p>After processing the data, we are left with 53 predictors, much less than the original 160.</p>
 <pre class="r"><code>dim(new_data)</code></pre>
 <pre><code>## [1] 19622    53</code></pre>
 </div>
