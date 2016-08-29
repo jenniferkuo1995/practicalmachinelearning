@@ -20,11 +20,13 @@ This project uses data from accelerometers ont he belt, forearm, arm, and dumbel
 
 ##Aim
 The 6 participants of the data above were asked to perform barbell lifts correctly and incorrectly in 5 different ways. This project aims to predict, based on accelerometer information, their manner of excercise out of these 5 ways. This is the "classe" variable in the training set. To do so, I will:
-* Process the test Data
-* Split the Data Using Cross Validation
-* Build a Prediction Model
-* Evaluate the Model 
-* Predict on 20 Test Cases
+
+*  Process the test Data
+*  Split the Data Using Cross Validation
+*  Build a Prediction Model
+*  Evaluate the Model 
+*  Predict on 20 Test Cases
+
 
 ##Data Processing
 First, as shown below, the data is imported into the data variable.
@@ -34,11 +36,15 @@ library(lattice); library(ggplot2); library(caret);library(randomForest)
 data <- read.csv("~/Documents/machine-learning-project/pml-training.csv",
                  na.strings = c("#DIV/0!","NA", ""))
 ```
-Next, a look at the missing values shows that there are a large number of columns containing a majority of missing values. 
+
+Next, I took an initial look at the data using the dim function. This shows that there are a large number of columns/predictors (160 in total). As such, I looked at how the number of columns could be reduced. 
+```{r initial look}
+dim(data)
+```
+
+A count of the NAs in each column shows that many columns containing mostly missing values.
 ```{r count NAs}
-
 table(sapply(data, function(x) {sum(is.na(x))}))
-
 ```
 
 As such, I decided to clean the data by removing columns with mostly missing values. The resulting new_data only has columns that contain no missing values. As seen from the table function, we are left with 60 columns that have 0 NA values. 
@@ -48,13 +54,18 @@ new_data <- data[ , colSums(is.na(data)) == 0]
 table(sapply(new_data, function(x) {sum(is.na(x))}))
 ```
 
-Additionally, by looking at the first 7 columns, we see that they are not sensor readings, and as such are not relevant predictors for classe. As such, I removed them.
+Then, by looking at the names of the first 10 columns, we see that the first 7 columns are not sensor readings, and as such are not relevant predictors for classe. These were also removed.
 
 ```{r remove non-sensor columns}
 names(new_data)[1:10]
 new_data <- new_data[,8:length(new_data)]
+
 ```
 
+After processing the data, we are left with 53 predictors, much less than the original 160.
+```{r proceed data}
+dim(new_data)
+```
 
 ## Splitting Data
 Using the createDataPartition function of the caret package, I split up new_data into a training set to train the model on, and a testing set to run predictions on (to test the accuracy of the model).
